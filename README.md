@@ -12,6 +12,11 @@ Next, all changes are applied and the number of dialogue lines should match perf
 - [Python 3.9 or higher](https://www.python.org/downloads/)
 - [Python ass](https://pypi.org/project/ass/)
 
+## Installation
+1. Download ZIP or do `git clone https://github.com/royvds/assDialogueMerger.git` in your terminal.
+2. Navigate to the root folder `assDialogueMerger` or do `cd assDialogueMerger`.
+3. `pip install .`
+
 ## Usage
 ```console
 $ assdialoguemerger --help
