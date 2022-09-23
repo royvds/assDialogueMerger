@@ -8,6 +8,8 @@ import difflib
 import ass
 
 
+DIALOGUE_STYLE_REGEX = r"^Default|^Main|^Italics|^Top|^Alt"
+
 class InputCountException(Exception):
     """ Exception raised when the number of available files in the directory
         of one input file does not match with the number of availabile files
@@ -60,13 +62,13 @@ class DialogueMerger:
     def __keep_dialogue(self, subtitle_events: list) -> list:
         """ Retrieves all dialogue events from subtitle events """
         return [event for event in subtitle_events
-                if re.match("^Default|^Alt", event.style) and event.text
+                if re.match(DIALOGUE_STYLE_REGEX, event.style, re.IGNORECASE) and event.text
                 and not event.dump_with_type().startswith("Comment: ")]
 
     def __remove_dialogue(self, subtitle_events: list) -> list:
         """ Retrieves all non-dialogue events from subtitle events """
         return [event for event in subtitle_events
-                if not re.match("^Default|^Alt", event.style) or not event.text
+                if not re.match(DIALOGUE_STYLE_REGEX, event.style, re.IGNORECASE) or not event.text
                 or event.dump_with_type().startswith("Comment: ")]
 
     def __find_events_misalignments(self, base_sub, dialogue_sub) -> tuple[set]:
