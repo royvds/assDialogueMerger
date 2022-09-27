@@ -29,11 +29,15 @@ optional arguments:
   -df DIALOGUE_FOLDER, --dialogue-folder DIALOGUE_FOLDER
                         Directory path containing the dialogue subtitle files
   -nl, --no-logs        Disable writing dialogue overwrites to log files
+  -f FILTER, --filter FILTER
+                        Regex for filtering the events (in both files), see README for default value
 ```
 
+## Defaults
+Default style match regex: ```^Default|^Main|^Italics|^Top|^Alt```
+
 ## Roadmap
-- Verbose logging mode, disabling text logs by default.
-- Allow for custom regex for style matching / recognizing the dialogue style.
+- Verbose logging mode (disable text logs by default).
 - (Possibly) generate difference view (much like diffchecker.com) instead of text log.
 - Copy over other fields such as actor.
 - Customizable output filenames.

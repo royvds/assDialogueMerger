@@ -122,3 +122,4 @@ cython_debug/
 # Output files when testing
 *.ass
 *.ssa
+*.log
