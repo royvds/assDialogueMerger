@@ -8,8 +8,6 @@ import difflib
 import ass
 
 
-DIALOGUE_STYLE_REGEX = r"^Default|^Main|^Italics|^Top|^Alt"
-
 class InputCountException(Exception):
     """ Exception raised when the number of available files in the directory
         of one input file does not match with the number of availabile files
@@ -53,8 +51,9 @@ def move_indices_list_to_list(indices: set, receiving_list: list, providing_list
 class DialogueMerger:
     """ Merges two subtitles, using one subtitle file as the base and another for the dialogue """
 
-    def __init__(self, export_dialogue_changes: bool = True):
+    def __init__(self, export_dialogue_changes: bool = True, event_regex_filter: str = None):
         self.export_dialogue_changes = export_dialogue_changes
+        self.event_regex_filter = event_regex_filter or r"^Default|^Main|^Italics|^Top|^Alt"
 
     def __sort_subtitle_events(self, events: list):
         return sorted(events, key=lambda e: e.start)
@@ -62,13 +61,14 @@ class DialogueMerger:
     def __keep_dialogue(self, subtitle_events: list) -> list:
         """ Retrieves all dialogue events from subtitle events """
         return [event for event in subtitle_events
-                if re.match(DIALOGUE_STYLE_REGEX, event.style, re.IGNORECASE) and event.text
+                if re.match(self.event_regex_filter, event.style, re.IGNORECASE) and event.text
                 and not event.dump_with_type().startswith("Comment: ")]
 
     def __remove_dialogue(self, subtitle_events: list) -> list:
         """ Retrieves all non-dialogue events from subtitle events """
         return [event for event in subtitle_events
-                if not re.match(DIALOGUE_STYLE_REGEX, event.style, re.IGNORECASE) or not event.text
+                if not re.match(self.event_regex_filter,
+                                event.style, re.IGNORECASE) or not event.text
                 or event.dump_with_type().startswith("Comment: ")]
 
     def __find_events_misalignments(self, base_sub, dialogue_sub) -> tuple[set]:
