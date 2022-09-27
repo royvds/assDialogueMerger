@@ -28,6 +28,9 @@ optional arguments:
                         Regex for filtering the events (in both files), see README for default value
 ```
 
+## Defaults
+Default style match regex: ```^Default|^Main|^Italics|^Top|^Alt```
+
 ## Roadmap
 - Verbose logging mode (disable text logs by default).
 - (Possibly) generate difference view (much like diffchecker.com) instead of text log.
