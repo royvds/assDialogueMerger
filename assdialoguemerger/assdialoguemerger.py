@@ -79,7 +79,6 @@ class DialogueMerger:
             must be copied over to the base_subtitle. Both input subtitles must
             already be filtered to only contain the dialogue events.
         """
-        # pylint: disable-msg=no-self-use
         offset = 0  # Index offset on the dialogue_subtitle iterations
         delete_indices = set()
         copy_indices = set()
