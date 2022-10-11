@@ -73,7 +73,7 @@ class DialogueMerger:
                                 event.style, re.IGNORECASE) or not event.text
                 or event.dump_with_type().startswith("Comment: ")]
 
-    def __find_events_misalignments(self, base_sub, dialogue_sub) -> tuple[set]:
+    def __find_events_misalignments(self, base_sub, dialogue_sub) -> tuple:
         """ Detect which lines need to be deleted from the base_subtitle
             dialogue events and which dialogue events from the dialogue_subtitle
             must be copied over to the base_subtitle. Both input subtitles must
