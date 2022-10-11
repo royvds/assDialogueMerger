@@ -48,15 +48,17 @@ def move_indices_list_to_list(indices: set, receiving_list: list, providing_list
         del providing_list[indice]
 
 
+def sort_subtitle_events(events: list):
+    """ Sort a list of events based on start time """
+    return sorted(events, key=lambda e: e.start)
+
+
 class DialogueMerger:
     """ Merges two subtitles, using one subtitle file as the base and another for the dialogue """
 
     def __init__(self, export_dialogue_changes: bool = True, event_regex_filter: str = None):
         self.export_dialogue_changes = export_dialogue_changes
         self.event_regex_filter = event_regex_filter or r"^Default|^Main|^Italics|^Top|^Alt"
-
-    def __sort_subtitle_events(self, events: list):
-        return sorted(events, key=lambda e: e.start)
 
     def __keep_dialogue(self, subtitle_events: list) -> list:
         """ Retrieves all dialogue events from subtitle events """
@@ -71,7 +73,7 @@ class DialogueMerger:
                                 event.style, re.IGNORECASE) or not event.text
                 or event.dump_with_type().startswith("Comment: ")]
 
-    def __find_events_misalignments(self, base_sub, dialogue_sub) -> tuple[set]:
+    def __find_events_misalignments(self, base_sub, dialogue_sub) -> tuple:
         """ Detect which lines need to be deleted from the base_subtitle
             dialogue events and which dialogue events from the dialogue_subtitle
             must be copied over to the base_subtitle. Both input subtitles must
@@ -147,10 +149,10 @@ class DialogueMerger:
         # Create sorted copies that hold only dialogue (or all other events)
         base_subtitle_d = copy.deepcopy(base_subtitle)
         base_subtitle.events = self.__remove_dialogue(base_subtitle.events)
-        base_subtitle_d.events = self.__sort_subtitle_events(
+        base_subtitle_d.events = sort_subtitle_events(
             self.__keep_dialogue(base_subtitle_d.events))
         dialogue_subtitle_d = copy.deepcopy(dialogue_subtitle)
-        dialogue_subtitle_d.events = self.__sort_subtitle_events(
+        dialogue_subtitle_d.events = sort_subtitle_events(
             self.__keep_dialogue(dialogue_subtitle_d.events))
 
         # Detect changes needed for merging dialogue
