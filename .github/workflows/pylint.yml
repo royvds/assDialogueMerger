@@ -5,8 +5,8 @@ on: [push]
 jobs:
   pylint:
     runs-on: ubuntu-latest
+    uses: ./.github/workflows/setup.yml
     steps:
-    - uses: ./.github/workflows/setup.yml
     - name: Install pylint
       run: |
         pip install pylint
