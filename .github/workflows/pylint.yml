@@ -3,13 +3,17 @@ name: Pylint
 on: [push]
 
 jobs:
+  setup:
+    uses: ./.github/workflows/setup.yml
+
   pylint:
     runs-on: ubuntu-latest
-    uses: ./.github/workflows/setup.yml
+    needs: setup
     steps:
+    - uses: actions/checkout@v3
     - name: Install pylint
       run: |
         pip install pylint
-    - name: Analysing the code with pylint
+    - name: Run pylint
       run: |
         pylint ./assdialoguemerger/
