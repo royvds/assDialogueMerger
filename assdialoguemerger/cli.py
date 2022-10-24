@@ -21,8 +21,10 @@ def main():
                         help='Directory path containing the base subtitle files')
     parser.add_argument('-df', '--dialogue-folder', required=True, type=directory,
                         help='Directory path containing the dialogue subtitle files')
-    parser.add_argument('-nl', '--no-logs', default=False, action="store_true",
-                        help='Disable writing dialogue overwrites to log files')
+    parser.add_argument('-dc', '--dialogue-changes', default=-1,
+                        help='The maximum similarity between the base sub and dialogue\
+                              sub dialogue for it to be added to the output file that\
+                              contains a list of all overwritten dialogue. 1 = 100%%')
     parser.add_argument('-f', '--filter', default=None,
                         help='Regex for filtering the events (in both files), '
                              'see README for default value')
@@ -40,7 +42,7 @@ def main():
     if base_file_count != dialogue_file_count:
         raise InputCountException(base_file_count, dialogue_file_count)
 
-    dialogue_merger = DialogueMerger(not args.no_logs, args.filter)
+    dialogue_merger = DialogueMerger(float(args.dialogue_changes), args.filter)
     print()
     for i, (base_file, dialogue_file) in enumerate(zip(base_files, dialogue_files)):
         dialogue_merger.merge(base_file, dialogue_file,

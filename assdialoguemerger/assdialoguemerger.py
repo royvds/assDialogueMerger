@@ -56,8 +56,8 @@ def sort_subtitle_events(events: list):
 class DialogueMerger:
     """ Merges two subtitles, using one subtitle file as the base and another for the dialogue """
 
-    def __init__(self, export_dialogue_changes: bool = True, event_regex_filter: str = None):
-        self.export_dialogue_changes = export_dialogue_changes
+    def __init__(self, change_output_similarity: float = -1, event_regex_filter: str = None):
+        self.change_output_similarity = change_output_similarity
         self.event_regex_filter = event_regex_filter or r"^Default|^Main|^Italics|^Top|^Alt"
 
     def __keep_dialogue(self, subtitle_events: list) -> list:
@@ -138,6 +138,17 @@ class DialogueMerger:
 
         return (delete_indices, copy_indices)
 
+    def __export_dialogue_changes(self, base_events, dialogue_events, output_file):
+        with open(output_file + '_changes.txt', 'w', encoding='utf_8_sig') as output_file:
+            # Copy dialogue changes from our dialogue subtitle to the base subtitle.
+            for (base_event, dialogue_event) in zip(base_events, dialogue_events):
+                # Logging it to file so we can later look at the changes
+                if similar(base_event.text, dialogue_event.text) <= self.change_output_similarity:
+                    output_file.write(
+                        f"{base_event.text} => {dialogue_event.text}\n")
+                base_event.text = dialogue_event.text
+                base_event.style = dialogue_event.style
+
     def merge(self, base_subtitle_input: str,
               dialogue_subtitle_input: str, output_file: str) -> None:
         """ Merge the dialogue of one subtitle into another subtitle """
@@ -175,16 +186,9 @@ class DialogueMerger:
         move_indices_list_to_list(
             event_changes[1], move_events, dialogue_subtitle_d.events)
 
-        if self.export_dialogue_changes:
-            with open(output_file + '.log', 'w', encoding='utf_8_sig') as log_file:
-                # Copy dialogue changes from our dialogue subtitle to the base subtitle.
-                for (base_event, dialogue_event) in \
-                        zip(base_subtitle_d.events, dialogue_subtitle_d.events):
-                    # Logging it to file so we can later look at the changes
-                    log_file.write(
-                        f"{base_event.text} => {dialogue_event.text}\n")
-                    base_event.text = dialogue_event.text
-                    base_event.style = dialogue_event.style
+        if self.change_output_similarity >= 0:
+            self.__export_dialogue_changes(base_subtitle_d.events,\
+                dialogue_subtitle_d.events, output_file)
 
         # Sort and combine the dialogue events, move_events, and the rest of the events.
         base_subtitle.events = sorted(
